@@ -56,3 +56,23 @@ def wait_success(w3: Web3, tx_hash, label: str = "transaction"):
         raise RuntimeError(f"{label} reverted (status=0)")
     return receipt
 
+
+def deploy_registry(w3: Web3, artifact: dict | None = None):
+    """Deploy the real compiled Solidity contract to this ephemeral chain."""
+    compiled = artifact if artifact is not None else contract_artifact()
+    factory = w3.eth.contract(abi=compiled["abi"], bytecode=compiled["bytecode"])
+    tx_hash = factory.constructor().transact({"from": w3.eth.accounts[0]})
+    receipt = wait_success(w3, tx_hash, "contract deployment")
+    if not receipt["contractAddress"]:
+        raise RuntimeError("Deployment receipt has no contract address")
+    return w3.eth.contract(address=receipt["contractAddress"], abi=compiled["abi"])
+
+
+def send(w3: Web3, fn, sender: str, label: str = "transaction"):
+    """Submit a local EVM transaction and verify success."""
+    return wait_success(w3, fn.transact({"from": sender}), label)
+
+
+def digest(text: str) -> bytes:
+    """Ethereum keccak256 of UTF-8 text, exactly like ethers.id(text)."""
+    return Web3.keccak(text=text)
