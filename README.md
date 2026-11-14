@@ -76,8 +76,7 @@ repairpass/local_chain.py           Local blockchain setup and deployment
 scripts/setup_compiler.py           Solidity compiler setup
 scripts/demo.py                     Main demo
 tests/test_device_registry.py       Unit tests
-requirements.txt                    Python packages
-docs/                               Diagrams and project notes
+requirements.txt                    Python packages                            
 ```
 
 ## What's not included yet
