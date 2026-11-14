@@ -39,3 +39,13 @@ def contract_artifact() -> dict:
         raise RuntimeError("Solidity compiler did not produce DeviceRegistry")
     return {"abi": artifact["abi"], "bytecode": "0x" + artifact["bin"]}
 
+
+def make_local_chain() -> Web3:
+    """Create a fresh local EVM with fictional, pre-funded test accounts."""
+    backend = PyEVMBackend()
+    tester = EthereumTester(backend=backend)
+    w3 = Web3(EthereumTesterProvider(tester))
+    if not w3.is_connected() or len(w3.eth.accounts) < 5:
+        raise RuntimeError("In-memory local Ethereum tester failed to initialize")
+    return w3
+
