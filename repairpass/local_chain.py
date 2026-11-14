@@ -49,3 +49,10 @@ def make_local_chain() -> Web3:
         raise RuntimeError("In-memory local Ethereum tester failed to initialize")
     return w3
 
+
+def wait_success(w3: Web3, tx_hash, label: str = "transaction"):
+    receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+    if receipt["status"] != 1:
+        raise RuntimeError(f"{label} reverted (status=0)")
+    return receipt
+
